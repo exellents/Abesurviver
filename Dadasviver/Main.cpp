@@ -5,7 +5,8 @@ struct Unit
 	double x;
 	double y;
 	int HP;
-	int co;		//当たり判定の大きさ(円)
+	int co;//当たり判定の大きさ(円)
+	int Eattack;
 	bool enable;//有効フラグ
 	int inv;	//無敵時間
 	int exp;	//経験値
@@ -29,6 +30,7 @@ struct Weapon
 
 const int slimenum = 100;	//スライムの最大数
 const int knifenum = 100;	//ナイフの最大数
+
 
 Unit abe;
 Unit slime[slimenum];
@@ -120,13 +122,15 @@ void init()
 	abe.level = 1;
 	abe.exp = 0;
 	abe.enable = true;
-
+	
+	
 	for (int i = 0; i < slimenum; i++)
 	{
 		slime[i].x = 0;
 		slime[i].y = 0;
 		slime[i].vx = 0;
 		slime[i].vy = 0;
+		slime[i].Eattack = 10;
 		slime[i].HP = 30;
 		slime[i].co = 10;
 		slime[i].enable = false;
@@ -216,6 +220,9 @@ void enemy()
 			if (collision(abe, slime[i]))
 			{
 				--abe.HP;
+				FontAsset(U"Reggae One")(U"%d"_fmt(slime[i].Eattack)).
+					drawAt({ abe.x,abe.y+ 10 }, ColorF{ 0.0,0.0,0.0 });
+			
 			}
 
 			for (int j = 0; j < knifenum; j++)
