@@ -260,6 +260,11 @@ void enemy()
 void weapon()
 {
 
+	if (KeySpace.down())
+	{
+		wno++;
+	}
+
 	if (wno == 0)
 	{
 	Knife();
@@ -268,7 +273,6 @@ void weapon()
 	{
 		Katana();
 	}
-
 	
 	if (wct > 0)
 	{
@@ -369,6 +373,10 @@ void draw()
 	if (wno == 0)
 	{
 		TextureAsset(U"knifeicon").draw(10, 0);
+	}
+	if (wno == 1)
+	{
+		TextureAsset(U"katanaicon").draw(10, 0);
 	}
 
 	if (levelup == true)
