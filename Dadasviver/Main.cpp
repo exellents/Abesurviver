@@ -397,6 +397,7 @@ void draw()
 
 }
 
+//ナイフのアップデート関数
 void Knife()
 {
 	if (wct == 0)
@@ -472,6 +473,7 @@ void Knife()
 	}
 }
 
+//レベルアップ時の関数
 void Levelup()
 {
 	if (KeyD.down() && select != 2)
@@ -515,6 +517,7 @@ bool weaponcollsion(Weapon a, Unit b)
 	return false;
 }
 
+//向きの関数
 void direction()
 {
 	//自機の向きを変える
