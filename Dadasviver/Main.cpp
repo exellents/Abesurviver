@@ -142,7 +142,7 @@ void init()
 
 	katana.level = 0;
 	katana.enable = false;
-	katana.co = 40;
+	katana.co = 20;
 	katana.atk = 30;
 
 	for (int i = 0; i < slimenum; i++)
