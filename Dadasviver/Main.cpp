@@ -142,7 +142,7 @@ void init()
 
 	katana.level = 0;
 	katana.enable = false;
-	katana.co = 10;
+	katana.co = 40;
 	katana.atk = 30;
 
 	for (int i = 0; i < slimenum; i++)
@@ -264,6 +264,11 @@ void weapon()
 	{
 	Knife();
 	}
+	if (wno == 1)
+	{
+		Katana();
+	}
+
 	
 	if (wct > 0)
 	{
@@ -346,6 +351,11 @@ void draw()
 			}
 
 		}
+	}
+
+	if (katana.enable == true)
+	{
+		Circle{ katana.x,katana.y,katana.co }.draw(ColorF{ 0.0,1.0,0.0 });
 	}
 
 	//自機のHPゲージ
@@ -470,6 +480,16 @@ void Knife()
 				knife[i].enable = false;
 			}
 		}
+	}
+}
+
+void Katana()
+{
+	if (wct == 0)
+	{
+		katana.x = abe.x;
+		katana.y = abe.y;
+		katana.enable = true;
 	}
 }
 
