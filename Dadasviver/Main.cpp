@@ -57,7 +57,7 @@ int wno = 0;	//武器のナンバー
 bool pause = false;		//ポーズ機能
 bool levelup = false;	//レベルアップ演出
 int select = 0;			//レベルアップボーナス選択用
-int rolling=0;
+double rolling=0;
 
 
 void Main()
@@ -143,7 +143,7 @@ void init()
 
 	katana.level = 0;
 	katana.enable = false;
-	katana.co = 20;
+	katana.co = 40;
 	katana.atk = 30;
 
 	for (int i = 0; i < slimenum; i++)
@@ -372,6 +372,7 @@ void draw()
 	if (katana.enable == true)
 	{
 		Circle{ katana.x,katana.y,katana.co }.draw(ColorF{ 0.0,1.0,0.0 });
+		TextureAsset(U"katanaimg").rotated(rolling + 0_deg).draw(katana.x, katana.y);
 	}
 
 	//自機のHPゲージ
@@ -505,13 +506,16 @@ void Knife()
 
 void Katana()
 {
+	katana.x = abe.x;
+	katana.y = abe.y;
+
 	if (wct == 0)
 	{
 		katana.enable = true;
 	}
 	if (katana.enable == true)
 	{
-
+		rolling+=0.1;
 	}
 
 }
