@@ -57,6 +57,7 @@ int wno = 0;	//武器のナンバー
 bool pause = false;		//ポーズ機能
 bool levelup = false;	//レベルアップ演出
 int select = 0;			//レベルアップボーナス選択用
+int rolling=0;
 
 
 void Main()
@@ -227,6 +228,11 @@ void enemy()
 					knife[j].enable = false;
 					slime[i].HP -= knife[j].atk;
 				}
+			}
+
+			if (weaponcollsion(katana, slime[i]) && katana.enable == true)
+			{
+				slime[i].HP -= katana.atk;
 			}
 
 			if (slime[i].HP <= 0)
@@ -501,10 +507,13 @@ void Katana()
 {
 	if (wct == 0)
 	{
-		katana.x = abe.x;
-		katana.y = abe.y;
 		katana.enable = true;
 	}
+	if (katana.enable == true)
+	{
+
+	}
+
 }
 
 //レベルアップ時の関数
