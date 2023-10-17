@@ -260,10 +260,12 @@ void enemy()
 void weapon()
 {
 
-	if (KeySpace.down())
+	if (KeySpace.down() && wno == 0)
 	{
-		wno++;
+		wno = 1;
+		TextureAsset::Release(U"knifeimg");
 	}
+
 
 	if (wno == 0)
 	{
@@ -317,7 +319,7 @@ void draw()
 
 	for (int i = 0; i < knifenum; i++)
 	{
-		if (knife[i].enable == true)
+		if (knife[i].enable == true&&wno==0)
 		{
 			//Circle{ knife[i].x,knife[i].y,knife[i].co }.draw(ColorF{ 0.0,1.0,0.0 });
 
