@@ -41,7 +41,6 @@ Weapon knife[knifenum];
 Weapon katana;
 
 void init();	//初期化設定
-void update();
 void player();	//自機
 void weapon();	//武器
 void Knife();	//ナイフ
