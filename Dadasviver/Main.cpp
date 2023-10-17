@@ -6,7 +6,7 @@ struct Unit
 	double y;
 	int HP;
 	int co;//当たり判定の大きさ(円)
-	int Eattack;
+	int Eattack;//敵の当たった時の攻撃力
 	bool enable;//有効フラグ
 	int inv;	//無敵時間
 	int exp;	//経験値
@@ -55,6 +55,7 @@ int muki = 0;	//自機の向き
 int wct = 0;	//武器のクールタイム
 int delay = 0;	//斜めに向いたときディレイをかける
 int wno = 0;	//武器のナンバー
+int flame = 0;  //現在のフレーム数
 
 bool pause = false;		//ポーズ機能
 bool levelup = false;	//レベルアップ演出
@@ -190,6 +191,7 @@ void player()
 			abe.exp += 200;
 			dia[i].enable = false;
 		}
+		
 	}
 	if (abe.exp >= 600)
 	{
@@ -220,8 +222,6 @@ void enemy()
 			if (collision(abe, slime[i]))
 			{
 				--abe.HP;
-				FontAsset(U"Reggae One")(U"%d"_fmt(slime[i].Eattack)).
-					drawAt({ abe.x,abe.y+ 10 }, ColorF{ 0.0,0.0,0.0 });
 			
 			}
 
@@ -229,10 +229,16 @@ void enemy()
 			{
 				if (weaponcollsion(knife[j], slime[i]) && knife[j].enable == true)
 				{
+
 					knife[j].vx = 0;
 					knife[j].vy = 0;
 					knife[j].enable = false;
 					slime[i].HP -= knife[j].atk;
+					
+						FontAsset(U"Reggae One")(U"10!!"_fmt(knife[j].atk)).
+							drawAt({ slime[i].x,slime[i].y - 30 }, ColorF{ 100.0,0.0,0.0 });
+
+					
 				}
 			}
 
@@ -290,6 +296,7 @@ void draw()
 		//Circle{ abe.x,abe.y,abe.co }.draw(ColorF{ 1.0,1.0,1.0 });
 		TextureAsset(U"abeimg").draw(abe.x - 15, abe.y - 20);
 	}
+
 	for (int i = 0; i < slimenum; i++)
 	{
 		if (slime[i].enable == true)
@@ -304,6 +311,21 @@ void draw()
 			{
 				TextureAsset(U"slimeimg").mirrored().draw(slime[i].x - 20, slime[i].y - 30);
 			}
+			for (int j = 0; j < knifenum; j++)
+			{
+				
+				if (weaponcollsion(knife[j], slime[i]))
+				{
+                     
+					   
+                         FontAsset(U"Reggae One")(U"10!!"_fmt(knife[j].atk)).
+						 drawAt({ slime[i].x,slime[i].y - 30 }, ColorF{ 100.0,0.0,0.0 });
+					     
+					   
+					
+				}
+			}
+			
 		}
 
 		if (dia[i].enable == true)
