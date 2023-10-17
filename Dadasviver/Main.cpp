@@ -259,13 +259,17 @@ void enemy()
 //武器のアップデート関数
 void weapon()
 {
-
 	if (KeySpace.down() && wno == 0)
 	{
-		wno = 1;
 		TextureAsset::Release(U"knifeimg");
 	}
-
+	if (KeySpace.down() && wno == 1)
+	{
+	}
+	if (KeySpace.down())
+	{
+		++wno;
+	}
 
 	if (wno == 0)
 	{
