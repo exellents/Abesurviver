@@ -1,5 +1,7 @@
 ﻿# include <Siv3D.hpp> // OpenSiv3D v0.6.11d
 
+using App = SceneManager<String>;
+
 struct Unit
 {
 	double x;
@@ -39,6 +41,7 @@ Weapon knife[knifenum];
 Weapon katana;
 
 void init();	//初期化設定
+void update();
 void player();	//自機
 void weapon();	//武器
 void Knife();	//ナイフ
@@ -47,6 +50,7 @@ void enemy();	//敵機
 void Levelup();	//レベルアップ時の演出
 void draw();	//描画
 void direction();//自機の向き
+
 
 bool collision(Unit a, Unit b);	//当たり判定関数
 bool weaponcollsion(Weapon a, Unit b);	//武器の当たり判定関数
@@ -61,29 +65,46 @@ bool pause = false;		//ポーズ機能
 bool levelup = false;	//レベルアップ演出
 int select = 0;			//レベルアップボーナス選択用
 
-
-void Main()
+class Title : public App::Scene // タイトルシーン
 {
-
-	init();
-	//Scene::SetBackground(ColorF{ 0.3, 1.0, 0.3 });
-
-	//アセットを登録する
-	TextureAsset::Register(U"map", U"map.png");
-	TextureAsset::Register(U"abeimg",U"abe.png");
-	TextureAsset::Register(U"knifeimg", U"ナイフ.png");
-	TextureAsset::Register(U"knifeicon", U"knifeicon.png");
-	TextureAsset::Register(U"katanaimg", U"刀.png");
-	TextureAsset::Register(U"katanaicon", U"刀アイコン.jpg");
-	TextureAsset::Register(U"slimeimg", U"slime.png");
-	TextureAsset::Register(U"diaimg", U"diamond.png");
-
-	FontAsset::Register(U"Reggae One",20,U"Reggae-master/fonts/ttf/ReggaeOne-Regular.ttf");
-
-
-
-	while (System::Update())
+public:
+	Title(const InitData& init)
+		:IScene{ init }
+	{}
+	~Title()
+	{}
+	void update()  override
 	{
+		// 左クリックで
+		if (MouseL.down())
+		{
+			// ゲームシーンに遷移
+			changeScene(U"Game");
+		}
+	}
+	void draw()const override
+	{
+		TextureAsset(U"OP1").draw(0, 0);
+		
+	}
+};
+class Game : public App::Scene
+{
+public:
+
+	Game(const InitData& init)
+		: IScene{ init }
+		
+	{}
+
+	~Game()
+	{}
+
+
+	void update()
+	{
+
+
 		if (pause == false && levelup == false)
 		{
 			direction();
@@ -93,7 +114,7 @@ void Main()
 		}
 		draw();
 
-		if (levelup == true&& pause == false)
+		if (levelup == true && pause == false)
 		{
 			Levelup();
 		}
@@ -109,8 +130,184 @@ void Main()
 				pause = true;
 			}
 		}
+
+	}
+	void draw()const override
+	{
+		TextureAsset(U"map").draw(0, 0);
+		if (abe.enable == true)
+		{
+			//Circle{ abe.x,abe.y,abe.co }.draw(ColorF{ 1.0,1.0,1.0 });
+			TextureAsset(U"abeimg").draw(abe.x - 15, abe.y - 20);
+		}
+
+		for (int i = 0; i < slimenum; i++)
+		{
+			if (slime[i].enable == true)
+			{
+				//Circle{ slime[i].x,slime[i].y,slime[i].co }.draw(ColorF{ 1.0,0.0,0.0 });
+
+				if (abe.x <= slime[i].x)
+				{
+					TextureAsset(U"slimeimg").draw(slime[i].x - 20, slime[i].y - 30);
+				}
+				if (abe.x > slime[i].x)
+				{
+					TextureAsset(U"slimeimg").mirrored().draw(slime[i].x - 20, slime[i].y - 30);
+				}
+				for (int j = 0; j < knifenum; j++)
+				{
+
+					if (weaponcollsion(knife[j], slime[i]))
+					{
+
+
+						FontAsset(U"Reggae One")(U"10!!"_fmt(knife[j].atk)).
+							drawAt({ slime[i].x,slime[i].y - 30 }, ColorF{ 100.0,0.0,0.0 });
+
+
+
+					}
+				}
+
+			}
+
+			if (dia[i].enable == true)
+			{
+				//Circle{ dia[i].x,dia[i].y,dia[i].co }.draw(ColorF{ 0.0,1.0,0.0 });
+				TextureAsset(U"diaimg").draw(dia[i].x - 13, dia[i].y - 13);
+			}
+		}
+
+		for (int i = 0; i < knifenum; i++)
+		{
+			if (knife[i].enable == true)
+			{
+				//Circle{ knife[i].x,knife[i].y,knife[i].co }.draw(ColorF{ 0.0,1.0,0.0 });
+
+				if (knife[i].wm == 0)
+				{
+					TextureAsset(U"knifeimg").rotated(135_deg).drawAt(knife[i].x - 10, knife[i].y);
+				}
+				if (knife[i].wm == 1)
+				{
+					TextureAsset(U"knifeimg").rotated(315_deg).draw(knife[i].x, knife[i].y - 12);
+				}
+				if (knife[i].wm == 2)
+				{
+					TextureAsset(U"knifeimg").rotated(225_deg).draw(knife[i].x - 12, knife[i].y - 20);
+				}
+				if (knife[i].wm == 3)
+				{
+					TextureAsset(U"knifeimg").rotated(45_deg).draw(knife[i].x - 12, knife[i].y);
+				}
+				if (knife[i].wm == 4)
+				{
+					TextureAsset(U"knifeimg").rotated(90_deg).draw(knife[i].x - 20, knife[i].y - 4);
+				}
+				if (knife[i].wm == 5)
+				{
+					TextureAsset(U"knifeimg").rotated(180_deg).draw(knife[i].x - 20, knife[i].y - 20);
+				}
+				if (knife[i].wm == 6)
+				{
+					TextureAsset(U"knifeimg").rotated(270_deg).draw(knife[i].x - 3, knife[i].y - 20);
+				}
+				if (knife[i].wm == 7)
+				{
+					TextureAsset(U"knifeimg").draw(knife[i].x - 3, knife[i].y - 3);
+				}
+
+			}
+		}
+
+		//自機のHPゲージ
+		RectF{ abe.x - 20,abe.y + 20,abe.HP / 25,10 }.draw(ColorF{ 0.0,0.0,1.0 });
+
+		//expゲージ
+		Rect{ 100, 30, 600, 30 }.shearedX(10).draw(ColorF{ 0.0,0.0,0.0 });
+		Rect{ 100, 30, abe.exp, 30 }.shearedX(10).draw(ColorF{ 0.3,1.0,0.3 });
+		Rect{ 100, 30, 600, 30 }.shearedX(10).drawFrame(2);
+		FontAsset(U"Reggae One")(U"Level.{}"_fmt(abe.level)).drawAt({ 150, 15 }, ColorF{ 0.0,0.0,0.0 });
+		if (wno == 0)
+		{
+			TextureAsset(U"knifeicon").draw(10, 0);
+		}
+
+		if (levelup == true)
+		{
+			if (select != 0)
+			{
+				RoundRect{ 100, 200, 180, 225, 20 }.drawShadow(Vec2{ 2, 2 }, 8, 0).draw(ColorF{ 0.0,0.7,0.0 });
+			}
+			else if (select == 0)
+			{
+				RoundRect{ 100, 200, 180, 225, 20 }.drawShadow(Vec2{ 2, 2 }, 8, 0).draw(ColorF{ 0.0,0.0,0.7 });
+			}
+			if (select != 1)
+			{
+				RoundRect{ 310, 200, 180, 225, 20 }.drawShadow(Vec2{ 2, 2 }, 8, 0).draw(ColorF{ 0.0,0.7,0.0 });
+			}
+			else if (select == 1)
+			{
+				RoundRect{ 310, 200, 180, 225, 20 }.drawShadow(Vec2{ 2, 2 }, 8, 0).draw(ColorF{ 0.0,0.0,0.7 });
+			}
+			if (select != 2)
+			{
+				RoundRect{ 520, 200, 180, 225, 20 }.drawShadow(Vec2{ 2, 2 }, 8, 0).draw(ColorF{ 0.0,0.7,0.0 });
+			}
+			else if (select == 2)
+			{
+				RoundRect{ 520, 200, 180, 225, 20 }.drawShadow(Vec2{ 2, 2 }, 8, 0).draw(ColorF{ 0.0,0.0,0.7 });
+			}
+
+		}
+
+		if (pause == true)
+		{
+			Rect{ 0, 0, 800, 600 }.draw(ColorF{ 0.0,0.0,0.0,0.3 });
+		}
+
+		
 	}
 
+
+};
+
+
+void Main()
+{
+
+		App manager;
+		manager.add<Title>(U"Title");
+		manager.add<Game>(U"Game");
+
+	init();
+	//Scene::SetBackground(ColorF{ 0.3, 1.0, 0.3 });
+
+	//アセットを登録する
+	TextureAsset::Register(U"map", U"map.png");
+	TextureAsset::Register(U"abeimg",U"abe.png");
+	TextureAsset::Register(U"knifeimg", U"ナイフ.png");
+	TextureAsset::Register(U"knifeicon", U"knifeicon.png");
+	TextureAsset::Register(U"katanaimg", U"刀.png");
+	TextureAsset::Register(U"katanaicon", U"刀アイコン.jpg");
+	TextureAsset::Register(U"slimeimg", U"slime.png");
+	TextureAsset::Register(U"diaimg", U"diamond.png");
+	TextureAsset::Register(U"OP1", U"OP1.jpg");
+
+	FontAsset::Register(U"Reggae One",20,U"Reggae-master/fonts/ttf/ReggaeOne-Regular.ttf");
+
+	manager.init(U"Scene");
+
+	while (System::Update())
+	{
+		if (not manager.update())
+		{
+			break;
+		}
+		
+	}
 }
 
 //変数の初期化
@@ -592,4 +789,7 @@ void direction()
 		--delay;
 	}
 }
+
+
+
 
